@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  db: postgres:17-alpine
+  container_name: freelance-flow-db
+  environment:
+    POSTGRES_USER: freelance_flow_user
+    POSTGRES_PASSWORD: freelance_flew_password
+    POSTGRES_DB: freelance_flow_db
+  ports:
+    - "5432:5432"
+  volumes:
+    - db_data:/var/lib/postgresql/data
+  networks:
+    - freelance-flow-network
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: freelance-flow-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/code
+      - static_volume: /app/static
+      - media_volume: /app/media
+    environment:
+      DEBUG: True
+      DATABASE_URL: postgres
+      SECRET_KEY: secret
+      ALLOWED_HOSTS: localhost
+      CORS_ORIGIN_ALLOW_ALL: True
+    depends_on:
+      - db
+    networks:
+      - freelance-flow-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container:name: freelance-flow-frontend
+    command: npm run start
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8000/api
+      REACT_APP_WS_URL: ws://localhost:8000/ws
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: true
+    depends_on:
+      - backend
+    networks:
+      - freelance-flow-network
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  freelanceflow_network:
+    driver: bridge
