@@ -1,10 +1,11 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import accounts.models as accounts
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "django-insecure-=759(mks_9#l4bble2fly7qun1z#6q4b1jnoe_dpvp_3em&o9!"
 
 DEBUG = os.environ.get("DEBUG", False)
 
@@ -26,7 +27,12 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = [
+    "accounts",
+    "clients",
+    "projects",
+    "tasks",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -148,4 +154,3 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 
 CORS_ALLOWED_CREDENTIALS = True
 
-AUTH_USER_MODEL = ''
