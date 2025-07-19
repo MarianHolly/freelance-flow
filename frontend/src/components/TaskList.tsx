@@ -79,19 +79,63 @@ const TaskList: React.FC = () => {
       </div>
 
       {loading ? (
-        <p>Loading tasks...</p>
+        <p className="text-center text-xl text-gray-800 opacity-95 mt-6 font-semibold">
+          Loading tasks...
+        </p>
       ) : (
         <div>
-          <h3>Tasks ({tasks.length})</h3>
-          {tasks.length === 0 ? (
-            <p>No tasks found.</p>
-          ) : (
-            tasks.map((task) => <div key={task.id}>{task.title}</div>)
-          )}
+          <h3 className="text-center text-xl text-gray-800 opacity-95 mt-6 font-light">
+            Tasks <span className="font-semibold">({tasks.length})</span>
+          </h3>
+          <div className="flex flex-col justify-center items-center my-6 gap-1">
+            {tasks.length === 0 ? (
+              <p className="text-center text-gray-600 italic mt-4">
+                No tasks yet. Create your first task above!
+              </p>
+            ) : (
+              tasks.map(task => (
+                <div
+                  key={task.id}
+                  className={`flex justify-between items-center border border-gray-100 rounded-sm py-3 px-6 w-96 min-h-[70px] transition-colors duration-200 ease-in-out
+                    ${task.completed ? 'bg-gray-50' : 'bg-white'}
+                  `}
+                >
+                  <div className="flex-1 mr-4">
+                    <h4 className={`text-lg font-normal mb-1
+                      ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}
+                    `}>
+                      {task.title}
+                    </h4>
+                    {task.description && <p className="text-sm text-gray-600">{task.description}</p>}
+                    <small className="text-xs text-gray-400 mt-1 block">
+                      Created: {new Date(task.created_at).toLocaleString()}
+                    </small>
+                  </div>
+                  <div className="flex flex-col space-y-1 ml-auto">
+                    <button
+                      className={`text-xs py-1 px-2 rounded
+                        ${task.completed
+                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                          : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'}
+                          transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-gray-300
+                      `}
+                    >
+                      {task.completed ? 'Done' : 'Mark Done'}
+                    </button>
+                    <button
+                      className="text-xs py-1 px-2 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default TaskList;
