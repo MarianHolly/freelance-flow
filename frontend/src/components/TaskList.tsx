@@ -47,28 +47,36 @@ const TaskList: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      <h2>Add a new task</h2>
-      <div>
+    <div className="max-w-4xl mx-auto my-8 flex flex-col items-center">
+      <h1 className="text-center text-2xl text-gray-900 font-semibold mb-8">
+        <span className="opacity-70">FreelanceFlow</span> - Task Manager
+      </h1>
+
+      {/* Add Task Form */}
+      <div className="border border-gray-100 rounded-sm py-3 px-6 flex flex-col items-center justify-center mb-8">
         <input
           type="text"
           placeholder="Task title"
           value={newTask.title}
-          onChange={(e) =>
-            setNewTask({ ...newTask, title: e.target.value })
-          }
+          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+          className="border border-gray-200 rounded-md p-2 mb-2 w-96"
         />
+
         <textarea
           placeholder="Task description"
           value={newTask.description}
           onChange={(e) =>
             setNewTask({ ...newTask, description: e.target.value })
           }
+          className="border border-gray-200 rounded-md p-2 mb-2 w-96"
         />
-        <button onClick={createTask}>Create</button>
+        <button
+          onClick={createTask}
+          className="bg-gray-800 text-gray-100 border border-gray-100 rounded-md p-2"
+        >
+          Add Task
+        </button>
       </div>
-
-      <h1>Task List</h1>
 
       {loading ? (
         <p>Loading tasks...</p>
