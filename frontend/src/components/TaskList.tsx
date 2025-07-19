@@ -42,6 +42,31 @@ const TaskList: React.FC = () => {
     }
   };
 
+  // Toggle task completion
+  const toggleTask = async (tast: Task) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/api/tasks/${tast.id}/`,
+        { completed: !tast.completed }
+      );
+      setTasks(tasks.map((t) => (t.id === tast.id ? response.data : t)));
+    } catch (error) {
+      console.error("Error toggling task:", error);
+    }
+  };
+
+  // Delete task
+  const deleteTask = async (taskId: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/api/tasks/${taskId}/`
+      );
+      setTasks(tasks.filter((t) => t.id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -93,36 +118,50 @@ const TaskList: React.FC = () => {
                 No tasks yet. Create your first task above!
               </p>
             ) : (
-              tasks.map(task => (
+              tasks.map((task) => (
                 <div
                   key={task.id}
                   className={`flex justify-between items-center border border-gray-100 rounded-sm py-3 px-6 w-96 min-h-[70px] transition-colors duration-200 ease-in-out
-                    ${task.completed ? 'bg-gray-50' : 'bg-white'}
+                    ${task.completed ? "bg-gray-50" : "bg-white"}
                   `}
                 >
                   <div className="flex-1 mr-4">
-                    <h4 className={`text-lg font-normal mb-1
-                      ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}
-                    `}>
+                    <h4
+                      className={`text-lg font-normal mb-1
+                      ${
+                        task.completed
+                          ? "line-through text-gray-500"
+                          : "text-gray-800"
+                      }
+                    `}
+                    >
                       {task.title}
                     </h4>
-                    {task.description && <p className="text-sm text-gray-600">{task.description}</p>}
+                    {task.description && (
+                      <p className="text-sm text-gray-600">
+                        {task.description}
+                      </p>
+                    )}
                     <small className="text-xs text-gray-400 mt-1 block">
                       Created: {new Date(task.created_at).toLocaleString()}
                     </small>
                   </div>
                   <div className="flex flex-col space-y-1 ml-auto">
                     <button
+                      onClick={() => toggleTask(task)}
                       className={`text-xs py-1 px-2 rounded
-                        ${task.completed
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'}
+                        ${
+                          task.completed
+                            ? "bg-green-100 text-green-700 hover:bg-green-200"
+                            : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                        }
                           transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-gray-300
                       `}
                     >
-                      {task.completed ? 'Done' : 'Mark Done'}
+                      {task.completed ? "Done" : "Mark Done"}
                     </button>
                     <button
+                      onClick={() => deleteTask(task.id)}
                       className="text-xs py-1 px-2 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-gray-300"
                     >
                       Delete
@@ -136,6 +175,6 @@ const TaskList: React.FC = () => {
       )}
     </div>
   );
-}
+};
 
 export default TaskList;
